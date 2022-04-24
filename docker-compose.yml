@@ -5,17 +5,16 @@ services:
     image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
     build:
       context: build/centos-stream-8/pkg-builder
+      cache_from:
+        - ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
       args:
         BUILDKIT_INLINE_CACHE: 1
 
   centos-stream-8-intel-mvp-tdx-tdvf:
     image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-tdx-tdv:${GITHUB_SHA}
-    depends_on:
-      - centos-stream-8-pkg-builder
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-tdx-tdvf
 
@@ -26,7 +25,6 @@ services:
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-tdx-libvirt
 
@@ -37,7 +35,6 @@ services:
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-tdx-guest-shim
 
@@ -48,7 +45,6 @@ services:
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-tdx-guest-grub2
 
@@ -59,7 +55,6 @@ services:
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-spr-qemu-kvm
 
@@ -70,6 +65,5 @@ services:
     build:
       context: build/centos-stream-8
       args:
-        BUILDKIT_INLINE_CACHE: 1
         PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
         PACKAGE: intel-mvp-spr-kernel
