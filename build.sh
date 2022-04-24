@@ -34,7 +34,7 @@ declare -A pids
 for package in $packages; do
   echo "redirecting $package build output to /tmp/$package.log"
   (
-    2>&1 >/dev/null docker rm -f centos-stream-8-$package || true
+    >/dev/null 2>&1 docker rm -f centos-stream-8-$package || true
 
     start=$SECONDS
     export INPUT_PACKAGE=$package
