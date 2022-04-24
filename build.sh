@@ -32,7 +32,7 @@ fi
 
 declare -A pids
 for package in $packages; do
-  echo "redirecting output to /tmp/$package.log"
+  echo "redirecting $package build output to /tmp/$package.log"
   (
     2>&1 >/dev/null docker rm -f centos-stream-8-$package || true
 
