@@ -51,7 +51,7 @@ for service in $services; do
   [ "$service" = "centos-stream-8-pkg-builder" ] && continue
 
   (
-    docker-compose build $service
+    docker-compose build $service | tee "/tmp/$service.log"
   ) 2>&1 | sed -le "s#^#$service: #;" &
   pids[$service]=$!
 done
@@ -73,8 +73,10 @@ done
 failed=no
 for service in "${!statuses[@]}"; do
   status=${statuses[$service]}
-  echo "$service: $status"
-  [ "$status" = "fail" ] && failed=yes
+  echo "$service logs in /tmp/$service.log: $status"
+  if [ "$status" = "fail" ]; then
+    failed=yes
+  fi
 done
 
 echo ""
