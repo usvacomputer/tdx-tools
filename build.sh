@@ -34,7 +34,7 @@ for package in $packages; do
     echo "redirecting output to /tmp/$package.log"
 
     export INPUT_PACKAGE=$package
-    docker-compose --ansi never run centos-stream-8-pkg-builder > "/tmp/$package.log"
+    docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder >"/tmp/$package.log"
     touch build/centos-stream-8/$package/build.done
     echo "build completed in $(($SECONDS-$start))s"
   ) 2>&1 | sed -le "#^#$package: #;" &
