@@ -5,7 +5,7 @@ _shutdown() {
   echo ""
   echo "SHUTDOWN"
 
-  INPUT_PACKAGE="" docker-compose down --timeout 0
+  INPUT_PACKAGE="" docker-compose --ansi never down --timeout 0
 
   exit 0
 }
@@ -34,7 +34,7 @@ for package in $packages; do
     echo "tail logs with docker logs -f centos-stream-8-$package"
 
     export INPUT_PACKAGE=$package
-    docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder 2>/dev/null >"/tmp/$package.log"
+    2>&1 >"/tmp/$package.log" docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder
     touch build/centos-stream-8/$package/build.done
     echo "build completed in $(($SECONDS-$start))s"
   ) 2>&1 | sed -le "#^#$package: #;" &
