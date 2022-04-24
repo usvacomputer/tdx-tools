@@ -5,7 +5,7 @@ _shutdown() {
   echo ""
   echo "SHUTDOWN"
 
-  docker-compose down --timeout 0
+  INPUT_PACKAGE="" docker-compose down --timeout 0
 
   exit 0
 }
@@ -17,8 +17,7 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 docker network create tdx-tools_default || true
 
 (
-  export INPUT_PACKAGE=""
-  docker-compose --ansi never build centos-stream-8-pkg-builder
+  INPUT_PACKAGE="" docker-compose --ansi never build centos-stream-8-pkg-builder
 )
 
 if [ "${1:-}" = "" ]; then
@@ -31,10 +30,10 @@ declare -A pids
 for package in $packages; do
   (
     start=$SECONDS
-    echo "redirecting output to /tmp/$package.log"
+    echo "redirecting output to /tmp/$package.log or tail logs with docker logs -f centos-stream-8-$package"
 
     export INPUT_PACKAGE=$package
-    docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder >"/tmp/$package.log"
+    docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder 2>/dev/null >"/tmp/$package.log"
     touch build/centos-stream-8/$package/build.done
     echo "build completed in $(($SECONDS-$start))s"
   ) 2>&1 | sed -le "#^#$package: #;" &
