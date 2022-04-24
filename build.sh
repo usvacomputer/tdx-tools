@@ -29,5 +29,28 @@ export GITHUB_SHA=${GITHUB_SHA:-$(git rev-parse HEAD)}
 echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
 echo "GITHUB_SHA=$GITHUB_SHA"
 
-docker-compose build
-docker-compose push
+(
+  export GITHUB_SHA=cache
+  docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder
+)
+docker-compose build centos-stream-8-pkg-builder
+
+(
+  docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+  docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+) 2>&1 >/dev/null &
+
+for service in $(docker-compose config --services); do
+  [ "$service" = "centos-stream-8-pkg-builder" ] && continue
+
+  (
+    (
+      export GITHUB_TAG=cache
+      docker-compose pull --ignore-pull-failures $service
+    )
+    docker-compose build $service
+    docker-compose push $service
+  ) 2>&1 | sed -le "s#^#build $service: #;" &
+done
+
+wait
