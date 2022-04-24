@@ -32,9 +32,9 @@ echo "GITHUB_SHA=$GITHUB_SHA"
 if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}; then
   (
     export GITHUB_SHA=cache
-    docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
+    docker-compose --no-ansi pull --ignore-pull-failures centos-stream-8-pkg-builder || true
   )
-  docker-compose build centos-stream-8-pkg-builder
+  docker-compose --no-ansi build centos-stream-8-pkg-builder
 
   (
     docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
@@ -43,7 +43,7 @@ if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-
 fi
 
 if [ "${1:-}" = "" ]; then
-  services=$(docker-compose config --services)
+  services=$(docker-compose --no-ansi config --services)
 else
   services=$@
 fi
@@ -53,7 +53,7 @@ for service in $services; do
   [ "$service" = "centos-stream-8-pkg-builder" ] && continue
 
   (
-    exec docker-compose run $service | tee "/tmp/$service.log"
+    exec docker-compose --no-ansi run $service | tee "/tmp/$service.log"
   ) 2>&1 | sed -le "s#^#$service: #;" &
   pids[$service]=$!
 done
