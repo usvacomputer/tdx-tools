@@ -3,7 +3,7 @@ set -euo pipefail
 
 _shutdown() {
   echo ""
-  echo "SHUTDOWN"
+  echo "SHUTDOWN - please wait"
 
   (
     INPUT_PACKAGE="" docker-compose --ansi never stop --timeout 0 || true
@@ -32,15 +32,15 @@ fi
 
 declare -A pids
 for package in $packages; do
+  echo "redirecting output to /tmp/$package.log"
   (
     2>/dev/null docker rm -f centos-stream-8-$package || true
 
     start=$SECONDS
     export INPUT_PACKAGE=$package
-    echo "redirecting output to /tmp/$package.log"
     >/tmp/$package.log 2>&1 docker-compose --ansi never run --name centos-stream-8-$package centos-stream-8-pkg-builder
     touch build/centos-stream-8/$package/build.done
-    echo "build completed in $(($SECONDS-$start))s"
+    echo "$package build completed in $(($SECONDS-$start))s"
   ) &
   pids[$package]=$!
 done
