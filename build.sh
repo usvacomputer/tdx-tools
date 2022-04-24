@@ -16,7 +16,7 @@ case $remote_origin_url in
     remote_origin_path=${remote_origin_path%.*} # remove .git
   ;;
   https://github.com/*)
-    remote_origin_path=${remote_origin_url##*/}
+    remote_origin_path=$(echo $remote_origin_url | cut -d/ -f 4-)
   ;;
   *)
     _err "unknown remote origin url"
