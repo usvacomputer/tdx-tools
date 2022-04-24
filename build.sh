@@ -30,10 +30,14 @@ fi
 declare -A pids
 for package in $packages; do
   (
+    start=$SECONDS
+    echo "redirecting output to /tmp/$package.log"
+
     export INPUT_PACKAGE=$package
-    docker-compose --ansi never run centos-stream-8-pkg-builder | tee "/tmp/$package.log"
+    docker-compose --ansi never run centos-stream-8-pkg-builder > "/tmp/$package.log"
     touch build/centos-stream-8/$package/build.done
-  ) 2>&1 | sed -le "s#\x1b\[[0-9;]*m##g;s#^#$package: #;" &
+    echo "build completed in $(($SECONDS-$start))s"
+  ) 2>&1 | sed -le "#^#$package: #;" &
   pids[$package]=$!
 done
 
