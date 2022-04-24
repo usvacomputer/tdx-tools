@@ -9,7 +9,6 @@ _shutdown() {
     INPUT_PACKAGE="" docker-compose --ansi never stop --timeout 0 || true
   )
 
-  kill 0
   wait
 
   exit 0
