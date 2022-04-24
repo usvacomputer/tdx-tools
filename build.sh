@@ -20,7 +20,7 @@ for service in $services; do
 
   (
     exec docker-compose --ansi never run $service | tee "/tmp/$service.log"
-  ) 2>&1 | sed -e 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g' | sed -le "s#^#$service: #;" &
+  ) 2>&1 | sed -le "s#\x1B\[[0-9;]\{1,\}[A-Za-z]##g;s#^#$service: #;" &
   pids[$service]=$!
 done
 
