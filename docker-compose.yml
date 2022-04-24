@@ -5,50 +5,8 @@ services:
     image: centos-stream-8-pkg-builder
     build:
       context: build/centos-stream-8/pkg-builder
-  centos-stream-8-intel-mvp-tdx-tdvf:
-    image: centos-stream-8-pkg-builder
     volumes:
-      - ./build/centos-stream-8/intel-mvp-tdx-tdvf:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
-
-  centos-stream-8-intel-mvp-tdx-libvirt:
-    image: centos-stream-8-pkg-builder
-    volumes:
-      - ./build/centos-stream-8/intel-mvp-tdx-libvirt:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
-
-  centos-stream-8-intel-mvp-tdx-guest-shim:
-    image: centos-stream-8-pkg-builder
-    volumes:
-      - ./build/centos-stream-8/intel-mvp-tdx-guest-shim:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
-
-  centos-stream-8-intel-mvp-tdx-guest-grub2:
-    image: centos-stream-8-pkg-builder
-    volumes:
-      - ./build/centos-stream-8/intel-mvp-tdx-guest-grub2:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
-
-  centos-stream-8-intel-mvp-spr-qemu-kvm:
-    image: centos-stream-8-pkg-builder
-    volumes:
-      - ./build/centos-stream-8/intel-mvp-spr-qemu-kvm:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
-
-  centos-stream-8-intel-mvp-spr-kernel:
-    image: centos-stream-8-pkg-builder
-    volumes:
-      - ./build/centos-stream-8/intel-mvp-spr-kernel:/repo
-    working_dir: /repo
-    entrypoint:
-      - /repo/build.sh
+      - ./:/workspace
+    environment:
+      - INPUT_PACKAGE=${INPUT_PACKAGE}
+    working_dir: /workspace
