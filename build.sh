@@ -70,6 +70,7 @@ for service in "${!pids[@]}"; do
   fi
 done
 
+echo ""
 failed=no
 for service in "${!statuses[@]}"; do
   status=${statuses[$service]}
