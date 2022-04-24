@@ -38,7 +38,7 @@ if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-
 
   (
     docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-    docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+    docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache || true
   )
 fi
 
