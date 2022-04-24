@@ -29,16 +29,16 @@ export GITHUB_SHA=${GITHUB_SHA:-$(git rev-parse HEAD)}
 echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
 echo "GITHUB_SHA=$GITHUB_SHA"
 
-# (
-#   export GITHUB_SHA=cache
-#   docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
-# )
-# docker-compose build centos-stream-8-pkg-builder
+(
+  export GITHUB_SHA=cache
+  docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
+)
+docker-compose build centos-stream-8-pkg-builder
 
-# (
-#   docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-#   docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-# )
+(
+  docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+  docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+)
 
 if [ "${1:-}" = "" ]; then
   services=$(docker-compose config --services)
