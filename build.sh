@@ -31,7 +31,7 @@ echo "GITHUB_SHA=$GITHUB_SHA"
 
 (
   export GITHUB_SHA=cache
-  docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder
+  docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
 )
 docker-compose build centos-stream-8-pkg-builder
 
@@ -46,7 +46,7 @@ for service in $(docker-compose config --services); do
   (
     (
       export GITHUB_TAG=cache
-      docker-compose pull --ignore-pull-failures $service
+      docker-compose pull --ignore-pull-failures $service || true
     )
     docker-compose build $service
     docker-compose push $service
