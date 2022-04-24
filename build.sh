@@ -33,7 +33,7 @@ for package in $packages; do
     export INPUT_PACKAGE=$package
     docker-compose --ansi never run centos-stream-8-pkg-builder | tee "/tmp/$package.log"
     touch build/centos-stream-8/$package/build.done
-  ) 2>&1 | sed -le "s#\x1B\[[0-9;]\{1,\}[A-Za-z]##g;s#^#$package: #;" &
+  ) 2>&1 | sed -le "s#\x1b\[[0-9;]*m##g;s#^#$package: #;" &
   pids[$package]=$!
 done
 
