@@ -8,6 +8,9 @@ _shutdown() {
   (
     INPUT_PACKAGE="" >/dev/null 2>&1 docker-compose --ansi never stop --timeout 0 2>&1 >/dev/null
   )
+  kill 0
+  wait
+
   exit 0
 }
 
