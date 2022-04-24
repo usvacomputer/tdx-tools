@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  centos-stream-8-pkg-builder:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    build:
+      context: build/centos-stream-8/pkg-builder
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+
+  centos-stream-8-intel-mvp-tdx-tdvf:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-tdx-tdv:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-tdx-tdvf
+
+  centos-stream-8-intel-mvp-tdx-libvirt:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-tdx-libvirt:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-tdx-libvirt
+
+  centos-stream-8-intel-mvp-tdx-guest-shim:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-tdx-guest-shim:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-tdx-guest-shim
+
+  centos-stream-8-intel-mvp-tdx-guest-grub2:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-tdx-guest-grub2:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-tdx-guest-grub2
+
+  centos-stream-8-intel-mvp-spr-qemu-kvm:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-spr-qemu-kvm:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-spr-qemu-kvm
+
+  centos-stream-8-intel-mvp-spr-kernel:
+    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-intel-mvp-spr-kernel:${GITHUB_SHA}
+    depends_on:
+      - centos-stream-8-pkg-builder
+    build:
+      context: build/centos-stream-8
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        PKG_BUILDER: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+        PACKAGE: intel-mvp-spr-kernel
