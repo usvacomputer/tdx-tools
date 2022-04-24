@@ -29,16 +29,18 @@ export GITHUB_SHA=${GITHUB_SHA:-$(git rev-parse HEAD)}
 echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
 echo "GITHUB_SHA=$GITHUB_SHA"
 
-(
-  export GITHUB_SHA=cache
-  docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
-)
-docker-compose build centos-stream-8-pkg-builder
+if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}; then
+  (
+    export GITHUB_SHA=cache
+    docker-compose pull --ignore-pull-failures centos-stream-8-pkg-builder || true
+  )
+  docker-compose build centos-stream-8-pkg-builder
 
-(
-  docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-  docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-)
+  (
+    docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+    docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
+  )
+fi
 
 if [ "${1:-}" = "" ]; then
   services=$(docker-compose config --services)
@@ -51,7 +53,7 @@ for service in $services; do
   [ "$service" = "centos-stream-8-pkg-builder" ] && continue
 
   (
-    docker-compose build $service | tee "/tmp/$service.log"
+    exec docker-compose run $service | tee "/tmp/$service.log"
   ) 2>&1 | sed -le "s#^#$service: #;" &
   pids[$service]=$!
 done
@@ -70,13 +72,13 @@ for service in "${!pids[@]}"; do
   fi
 done
 
-echo ""
 failed=no
 for service in "${!statuses[@]}"; do
   status=${statuses[$service]}
-  echo "$service logs in /tmp/$service.log: $status"
+  echo "$service logs in /tmp/$service.log: $status "
   if [ "$status" = "fail" ]; then
     failed=yes
+    cat /tmp/$service.log
   fi
 done
 
