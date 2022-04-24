@@ -40,7 +40,13 @@ docker-compose build centos-stream-8-pkg-builder
   docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
 ) 2>&1 >/dev/null &
 
-for service in $(docker-compose config --services); do
+if [ "${1:-}" = "" ]; then
+  services=$(docker-compose config --services)
+else
+  services=$@
+fi
+
+for service in $services; do
   [ "$service" = "centos-stream-8-pkg-builder" ] && continue
 
   (
