@@ -32,9 +32,9 @@ echo "GITHUB_SHA=$GITHUB_SHA"
 if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}; then
   (
     export GITHUB_SHA=cache
-    docker-compose --no-ansi pull --ignore-pull-failures centos-stream-8-pkg-builder || true
+    docker-compose --ansi never pull --ignore-pull-failures centos-stream-8-pkg-builder || true
   )
-  docker-compose --no-ansi build centos-stream-8-pkg-builder
+  docker-compose --ansi never build centos-stream-8-pkg-builder
 
   (
     docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
@@ -43,17 +43,20 @@ if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-
 fi
 
 if [ "${1:-}" = "" ]; then
-  services=$(docker-compose --no-ansi config --services)
+  services=$(docker-compose --ansi never config --services)
 else
   services=$@
 fi
+
+# otherwise multiple networks with the same name will appear when docker-compose is launched in parallel
+docker network create tdx-tools_default || true
 
 declare -A pids
 for service in $services; do
   [ "$service" = "centos-stream-8-pkg-builder" ] && continue
 
   (
-    exec docker-compose --no-ansi run $service | tee "/tmp/$service.log"
+    exec docker-compose --ansi never run $service | tee "/tmp/$service.log"
   ) 2>&1 | sed -le "s#^#$service: #;" &
   pids[$service]=$!
 done
