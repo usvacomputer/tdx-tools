@@ -50,7 +50,11 @@ for service in $(docker-compose config --services); do
     )
     docker-compose build $service
     docker-compose push $service
-  ) 2>&1 | sed -le "s#^#build $service: #;" &
+    docker tag ghcr.io/${GITHUB_REPOSITORY}/$service:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/$service:cache
+    docker push ghcr.io/${GITHUB_REPOSITORY}/$service:cache
+  ) 2>&1 | sed -le "s#^#$service: #;" &
 done
 
 wait
+echo ""
+echo "DONE"
