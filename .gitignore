@@ -2,3 +2,12 @@
 *.qcow2
 vmlinuz
 *.fd
+
+build/centos-stream-8/intel-mvp-spr-kernel/linux-spr-kernel
+build/centos-stream-8/intel-mvp-spr-qemu-kvm/qemu
+build/centos-stream-8/intel-mvp-tdx-guest-grub2/patches-tdx-grub-2.02
+build/centos-stream-8/intel-mvp-tdx-guest-shim/patches-tdx-shim-15.4
+build/centos-stream-8/intel-mvp-tdx-guest-shim/shim-15.4
+build/centos-stream-8/intel-mvp-tdx-libvirt/libvirt
+build/centos-stream-8/intel-mvp-tdx-tdvf/edk2-staging
+build/centos-stream-8/intel-mvp-tdx-tdvf/edk2.tar.gz
