@@ -2,16 +2,11 @@ version: '3'
 
 services:
   centos-stream-8-pkg-builder:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     build:
       context: build/centos-stream-8/pkg-builder
-      cache_from:
-        - ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-      args:
-        BUILDKIT_INLINE_CACHE: 1
-
   centos-stream-8-intel-mvp-tdx-tdvf:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-tdx-tdvf:/repo
     working_dir: /repo
@@ -19,7 +14,7 @@ services:
       - /repo/build.sh
 
   centos-stream-8-intel-mvp-tdx-libvirt:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-tdx-libvirt:/repo
     working_dir: /repo
@@ -27,7 +22,7 @@ services:
       - /repo/build.sh
 
   centos-stream-8-intel-mvp-tdx-guest-shim:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-tdx-guest-shim:/repo
     working_dir: /repo
@@ -35,7 +30,7 @@ services:
       - /repo/build.sh
 
   centos-stream-8-intel-mvp-tdx-guest-grub2:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-tdx-guest-grub2:/repo
     working_dir: /repo
@@ -43,7 +38,7 @@ services:
       - /repo/build.sh
 
   centos-stream-8-intel-mvp-spr-qemu-kvm:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-spr-qemu-kvm:/repo
     working_dir: /repo
@@ -51,7 +46,7 @@ services:
       - /repo/build.sh
 
   centos-stream-8-intel-mvp-spr-kernel:
-    image: ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}
+    image: centos-stream-8-pkg-builder
     volumes:
       - ./build/centos-stream-8/intel-mvp-spr-kernel:/repo
     working_dir: /repo
