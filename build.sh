@@ -1,55 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-_err() {
-  echo "err: $@"
-  exit 1
-}
-
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
-export DOCKER_BUILDKIT=1
 
-remote_origin_url=$(git config --get remote.origin.url)
-case $remote_origin_url in
-  git@github.com:*)
-    remote_origin_path=${remote_origin_url#*:}
-    remote_origin_path=${remote_origin_path%.*} # remove .git
-  ;;
-  https://github.com/*)
-    remote_origin_path=$(echo $remote_origin_url | cut -d/ -f 4-)
-  ;;
-  *)
-    _err "unknown remote origin url"
-  ;;
-esac
+# otherwise multiple networks with the same name will appear when docker-compose is launched in parallel
+docker network create tdx-tools_default || true
 
-export GITHUB_REPOSITORY=${GITHUB_REPOSITORY:-$remote_origin_path}
-export GITHUB_SHA=${GITHUB_SHA:-$(git rev-parse HEAD)}
-
-echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-echo "GITHUB_SHA=$GITHUB_SHA"
-
-if ! >/dev/null docker image inspect ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA}; then
-  (
-    export GITHUB_SHA=cache
-    docker-compose --ansi never pull --ignore-pull-failures centos-stream-8-pkg-builder || true
-  )
-  docker-compose --ansi never build centos-stream-8-pkg-builder
-
-  (
-    docker tag ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:${GITHUB_SHA} ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache
-    docker push ghcr.io/${GITHUB_REPOSITORY}/centos-stream-8-pkg-builder:cache || true
-  )
-fi
+docker-compose --ansi never build centos-stream-8-pkg-builder
 
 if [ "${1:-}" = "" ]; then
   services=$(docker-compose --ansi never config --services)
 else
   services=$@
 fi
-
-# otherwise multiple networks with the same name will appear when docker-compose is launched in parallel
-docker network create tdx-tools_default || true
 
 declare -A pids
 for service in $services; do
@@ -78,7 +41,7 @@ done
 failed=no
 for service in "${!statuses[@]}"; do
   status=${statuses[$service]}
-  echo "$service logs in /tmp/$service.log: $status "
+  echo "$service logs in /tmp/$service.log: $status"
   if [ "$status" = "fail" ]; then
     failed=yes
     cat /tmp/$service.log
