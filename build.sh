@@ -6,7 +6,7 @@ _shutdown() {
   echo "SHUTDOWN"
 
   (
-    INPUT_PACKAGE="" >/dev/null 2>&1 docker-compose --ansi never stop --timeout 0 2>&1 >/dev/null
+    INPUT_PACKAGE="" docker-compose --ansi never stop --timeout 0 || true
   )
   kill 0
   wait
